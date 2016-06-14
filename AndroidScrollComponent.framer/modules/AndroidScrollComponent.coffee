@@ -7,8 +7,8 @@ $ =
 
 class exports.AndroidScrollComponent extends ScrollComponent
 	constructor: (options={}) ->
-		options.overscrollGlow ?= true
-		options.fill ?= r: 0, g: 0, b: 0, a: .24
+		options.edgeEffect ?= true
+		options.effectColor ?= r: 0, g: 0, b: 0, a: .24
 		super options
 		
 		# Disable overdrag and bounce
@@ -20,11 +20,11 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		@_updateBounds()
 		
 		# Overscroll animation 
-		@overscrollEndValue = 0
-		@overscrollEnd = new Animation
+		@effectAnimationValue = 0
+		@effectAnimation = new Animation
 			layer: @
 			properties:
-				overscrollEndValue: 1
+				effectAnimationValue: 1
 			curve: "beizer-curve(0.0, 0.0, 0.2, 1)"
 			time: .300
 		
@@ -37,12 +37,12 @@ class exports.AndroidScrollComponent extends ScrollComponent
 	# EVENTS
 	_touchStart: (e) =>
 		# Touched is true
-		@touched = true
+		@clickOrTouch = true
 		
 		# Stop animation / reset value 
-		@overscrollEnd.stop()
+		@effectAnimation.stop()
 		Framer.Loop.off "update", @_updateOverscrollEndValue
-		@overscrollEndValue = 0
+		@effectAnimationValue = 0
 		
 		# Set touch x and y
 		if Utils.isMobile()
@@ -56,12 +56,12 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			
 	_touchMove: (e) =>
 		# Overscroll
-		if @touched
-			@_overscrollY(e) if @scrollVertical and @overscrollGlow is true
+		if @clickOrTouch
+			@_overscrollY(e) if @scrollVertical and @edgeEffect is true
 		
 	_touchEnd: (e) =>
 		# Touched is false 
-		@touched = false
+		@clickOrTouch = false
 		
 		# Set end values
 		for b in @bounds when b.isOverscrolled is true
@@ -70,8 +70,8 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			b.endAlpha = b.deltaAlpha
 		
 		# Overscroll animation 
-		@overscrollEnd.start()
-		@overscrollEnd.onAnimationEnd ->
+		@effectAnimation.start()
+		@effectAnimation.onAnimationEnd ->
 			Framer.Loop.off "update", @options.layer._updateOverscrollEndValue
 			
 		Framer.Loop.on "update", @_updateOverscrollEndValue
@@ -94,7 +94,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			d[3] = d[7] = b.deltaSideY = Utils.modulate b.deltaY, [0, b.height], [0, b.height * .20], true
 			d[2] = b.deltaLeftSideX = Utils.modulate eventX, [0, b.width], [-(b.width/4), 0], true
 			d[6] = b.deltaRightSideX = Utils.modulate eventX, [0, b.width], [b.width, b.width + (b.width/4)], true
-			b.deltaAlpha = Utils.modulate b.deltaY, [0, b.height], [0, @fill.a], true
+			b.deltaAlpha = Utils.modulate b.deltaY, [0, b.height], [0, @effectColor.a], true
 			
 			# Update SVG
 			@_updateSVG(b, d, b.deltaAlpha)
@@ -110,7 +110,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			d[3] = d[7] = b.deltaSideY = Utils.modulate b.deltaY, [b.height, 0], [b.height, b.height - (b.height * .20)], true
 			d[2] = b.deltaLeftSideX = Utils.modulate eventX, [0, b.width], [-(b.width/4), 0], true
 			d[6] = b.deltaRightSideX = Utils.modulate eventX, [0, b.width], [b.width, b.width + (b.width/4)], true
-			b.deltaAlpha = Utils.modulate b.deltaY, [b.height, 0], [0, @fill.a], true
+			b.deltaAlpha = Utils.modulate b.deltaY, [b.height, 0], [0, @effectColor.a], true
 			
 			# Update SVG
 			@_updateSVG(b, d, b.deltaAlpha)
@@ -125,14 +125,14 @@ class exports.AndroidScrollComponent extends ScrollComponent
 				when b.name is "topBound"
 					d = b.d
 					
-					d[5] = b.deltaY = Utils.modulate @overscrollEndValue, [0, 1], [b.endY, 0], true
+					d[5] = b.deltaY = Utils.modulate @effectAnimationValue, [0, 1], [b.endY, 0], true
 					d[3] = d[7] = b.deltaSideY = Utils.modulate b.deltaY, [b.endY, 0], [b.endSideY, 0], true
 					b.deltaAlpha = Utils.modulate b.deltaY, [b.endY, 0], [b.endAlpha, 0], true
 					
 				when b.name is "bottomBound"
 					d = b.d
 					
-					d[5] = b.deltaY = Utils.modulate @overscrollEndValue, [0, 1], [b.endY, b.height], true
+					d[5] = b.deltaY = Utils.modulate @effectAnimationValue, [0, 1], [b.endY, b.height], true
 					d[3] = d[7] = b.deltaSideY = Utils.modulate b.deltaY, [b.endY, b.height], [b.endSideY, b.height], true
 					b.deltaAlpha = Utils.modulate b.deltaY, [b.endY, b.height], [b.endAlpha, 0], true
 					
@@ -188,7 +188,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		bound.svg.setAttribute "height", bound.height
 		
 		bound.path = document.createElementNS "http://www.w3.org/2000/svg", "path"
-		bound.path.setAttribute "fill", "rgba(#{@fill.r}, #{@fill.g}, #{@fill.b}, #{@fill.a})"
+		bound.path.setAttribute "fill", "rgba(#{@effectColor.r}, #{@effectColor.g}, #{@effectColor.b}, #{@effectColor.a})"
 		bound.path.setAttribute "d", "M#{bound.d[0]},#{bound.d[1]} L#{bound.d[2]}, #{bound.d[3]} Q#{bound.d[4]},#{bound.d[5]} #{bound.d[6]},#{bound.d[7]} L#{bound.d[8]}, #{bound.d[9]}"
 		
 		# Append 
@@ -197,29 +197,29 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		
 	_updateSVG: (bound, d, alpha) =>
 		bound.path.setAttribute "d", "M#{d[0]},#{d[1]} L#{d[2]}, #{d[3]} Q#{d[4]},#{d[5]} #{d[6]},#{d[7]} L#{d[8]}, #{d[9]}"
-		bound.path.setAttribute "fill", "rgba(#{@fill.r}, #{@fill.g}, #{@fill.b}, #{alpha})"
+		bound.path.setAttribute "fill", "rgba(#{@effectColor.r}, #{@effectColor.g}, #{@effectColor.b}, #{alpha})"
 					
 	# DEFINTIONS
-	@define "fill",
-		get: -> @_fill
-		set: (value) -> @_fill = value 
+	@define "effectColor",
+		get: -> @_effectColor
+		set: (value) -> @_effectColor = value 
 		
 	@define "d", 
 		get: -> @_d 
 		set: (value) -> @_d = value
 		
-	@define "touched",
-		get: -> @_touched
-		set: (value) -> @_touched = value
+	@define "clickOrTouch",
+		get: -> @_clickOrTouch
+		set: (value) -> @_clickOrTouch = value
 		
 	@define "touch",
 		get: -> @_touch 
 		set: (value) -> @_touch = value
 
-	@define "overscrollGlow",
-		get: -> @_overscrollGlow 
-		set: (value) -> @_overscrollGlow = value
+	@define "edgeEffect",
+		get: -> @_edgeEffect 
+		set: (value) -> @_edgeEffect = value
 		
-	@define "overscrollEndValue",	
-	get: -> @_overscrollEndValue
-	set: (value) -> @_overscrollEndValue = value
+	@define "effectAnimationValue",	
+	get: -> @_effectAnimationValue
+	set: (value) -> @_effectAnimationValue = value

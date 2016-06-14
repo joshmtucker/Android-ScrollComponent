@@ -29,7 +29,7 @@ exports.AndroidScrollComponent = (function(superClass) {
     this._updateSVG = bind(this._updateSVG, this);
     this._createSVG = bind(this._createSVG, this);
     this._createBound = bind(this._createBound, this);
-    this._updateBounds = bind(this._updateBounds, this);
+    this._setBounds = bind(this._setBounds, this);
     this._updateOverscrollEndValue = bind(this._updateOverscrollEndValue, this);
     this._overscrollY = bind(this._overscrollY, this);
     this._touchEnd = bind(this._touchEnd, this);
@@ -38,8 +38,16 @@ exports.AndroidScrollComponent = (function(superClass) {
     if (options.edgeEffect == null) {
       options.edgeEffect = true;
     }
+<<<<<<< HEAD
+    if (options.edgeEffect == null) {
+      options.edgeEffect = true;
+    }
+    if (options.fill == null) {
+      options.fill = {
+=======
     if (options.effectColor == null) {
       options.effectColor = {
+>>>>>>> master
         r: 0,
         g: 0,
         b: 0,
@@ -50,9 +58,15 @@ exports.AndroidScrollComponent = (function(superClass) {
     this.content.draggable.overdrag = false;
     this.content.draggable.bounce = false;
     this.bounds = [];
+<<<<<<< HEAD
+    this._setBounds();
+    this.overscrollEndValue = 0;
+    this.overscrollEnd = new Animation({
+=======
     this._updateBounds();
     this.effectAnimationValue = 0;
     this.effectAnimation = new Animation({
+>>>>>>> master
       layer: this,
       properties: {
         effectAnimationValue: 1
@@ -172,7 +186,7 @@ exports.AndroidScrollComponent = (function(superClass) {
     return results;
   };
 
-  AndroidScrollComponent.prototype._updateBounds = function() {
+  AndroidScrollComponent.prototype._setBounds = function() {
     var bound, i, name, options, ref, results;
     ref = $.bounds;
     results = [];
@@ -188,13 +202,6 @@ exports.AndroidScrollComponent = (function(superClass) {
             bound.y = this.height - bound.height;
             bound.width = this.width;
             return bound.d = [0, bound.height, 0, bound.height, bound.width / 2, bound.height, bound.width, bound.height, bound.width, bound.height];
-          case i !== 2:
-            bound.height = this.height;
-            return bound.d = [0, 0, 0, 0, bound.width, bound.height / 2, 0, bound.height, 0, bound.height];
-          case i !== 3:
-            bound.x = this.width - bound.width;
-            bound.height = this.height;
-            return bound.d = [bound.width, 0, bound.width, 0, 0, bound.height / 2, bound.width, bound.height, bound.width, bound.height];
         }
       }).call(this);
       results.push(this._createBound(name, bound));
@@ -209,11 +216,11 @@ exports.AndroidScrollComponent = (function(superClass) {
       y: bound.y,
       width: bound.width,
       height: bound.height,
-      d: bound.d,
       name: name,
       backgroundColor: "",
       parent: this
     });
+    b.d = bound.d;
     b.isOverscrolled = false;
     this.bounds.push(b);
     return this._createSVG(b);
@@ -224,10 +231,14 @@ exports.AndroidScrollComponent = (function(superClass) {
     bound.svg.setAttribute("width", bound.width);
     bound.svg.setAttribute("height", bound.height);
     bound.path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+<<<<<<< HEAD
+=======
     bound.path.setAttribute("fill", "rgba(" + this.effectColor.r + ", " + this.effectColor.g + ", " + this.effectColor.b + ", " + this.effectColor.a + ")");
     bound.path.setAttribute("d", "M" + bound.d[0] + "," + bound.d[1] + " L" + bound.d[2] + ", " + bound.d[3] + " Q" + bound.d[4] + "," + bound.d[5] + " " + bound.d[6] + "," + bound.d[7] + " L" + bound.d[8] + ", " + bound.d[9]);
+>>>>>>> master
     bound.svg.appendChild(bound.path);
-    return bound._element.appendChild(bound.svg);
+    bound._element.appendChild(bound.svg);
+    return this._updateSVG(bound, bound.d, this.fill.a);
   };
 
   AndroidScrollComponent.prototype._updateSVG = function(bound, d, alpha) {
@@ -244,6 +255,9 @@ exports.AndroidScrollComponent = (function(superClass) {
     }
   });
 
+<<<<<<< HEAD
+  AndroidScrollComponent.define("touched", {
+=======
   AndroidScrollComponent.define("d", {
     get: function() {
       return this._d;
@@ -254,6 +268,7 @@ exports.AndroidScrollComponent = (function(superClass) {
   });
 
   AndroidScrollComponent.define("clickOrTouch", {
+>>>>>>> master
     get: function() {
       return this._clickOrTouch;
     },

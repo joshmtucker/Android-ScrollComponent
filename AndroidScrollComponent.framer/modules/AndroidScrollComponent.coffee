@@ -8,7 +8,7 @@ $ =
 class exports.AndroidScrollComponent extends ScrollComponent
 	constructor: (options={}) ->
 		options.edgeEffect ?= true
-		options.fill ?= r: 0, g: 0, b: 0, a: .24
+		options.effectColor ?= r: 0, g: 0, b: 0, a: .24
 		super options
 		
 		# Disable overdrag and bounce
@@ -94,7 +94,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			d[3] = d[7] = b.deltaSideY = Utils.modulate b.deltaY, [0, b.height], [0, b.height * .20], true
 			d[2] = b.deltaLeftSideX = Utils.modulate eventX, [0, b.width], [-(b.width/4), 0], true
 			d[6] = b.deltaRightSideX = Utils.modulate eventX, [0, b.width], [b.width, b.width + (b.width/4)], true
-			b.deltaAlpha = Utils.modulate b.deltaY, [0, b.height], [0, @fill.a], true
+			b.deltaAlpha = Utils.modulate b.deltaY, [0, b.height], [0, @effectColor.a], true
 			
 			# Update SVG
 			@_updateSVG(b, d, b.deltaAlpha)
@@ -110,7 +110,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			d[3] = d[7] = b.deltaSideY = Utils.modulate b.deltaY, [b.height, 0], [b.height, b.height - (b.height * .20)], true
 			d[2] = b.deltaLeftSideX = Utils.modulate eventX, [0, b.width], [-(b.width/4), 0], true
 			d[6] = b.deltaRightSideX = Utils.modulate eventX, [0, b.width], [b.width, b.width + (b.width/4)], true
-			b.deltaAlpha = Utils.modulate b.deltaY, [b.height, 0], [0, @fill.a], true
+			b.deltaAlpha = Utils.modulate b.deltaY, [b.height, 0], [0, @effectColor.a], true
 			
 			# Update SVG
 			@_updateSVG(b, d, b.deltaAlpha)
@@ -188,7 +188,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		bound.svg.setAttribute "height", bound.height
 		
 		bound.path = document.createElementNS "http://www.w3.org/2000/svg", "path"
-		bound.path.setAttribute "fill", "rgba(#{@fill.r}, #{@fill.g}, #{@fill.b}, #{@fill.a})"
+		bound.path.setAttribute "fill", "rgba(#{@effectColor.r}, #{@effectColor.g}, #{@effectColor.b}, #{@effectColor.a})"
 		bound.path.setAttribute "d", "M#{bound.d[0]},#{bound.d[1]} L#{bound.d[2]}, #{bound.d[3]} Q#{bound.d[4]},#{bound.d[5]} #{bound.d[6]},#{bound.d[7]} L#{bound.d[8]}, #{bound.d[9]}"
 		
 		# Append 
@@ -197,12 +197,12 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		
 	_updateSVG: (bound, d, alpha) =>
 		bound.path.setAttribute "d", "M#{d[0]},#{d[1]} L#{d[2]}, #{d[3]} Q#{d[4]},#{d[5]} #{d[6]},#{d[7]} L#{d[8]}, #{d[9]}"
-		bound.path.setAttribute "fill", "rgba(#{@fill.r}, #{@fill.g}, #{@fill.b}, #{alpha})"
+		bound.path.setAttribute "fill", "rgba(#{@effectColor.r}, #{@effectColor.g}, #{@effectColor.b}, #{alpha})"
 					
 	# DEFINTIONS
-	@define "fill",
-		get: -> @_fill
-		set: (value) -> @_fill = value 
+	@define "effectColor",
+		get: -> @_effectColor
+		set: (value) -> @_effectColor = value 
 		
 	@define "d", 
 		get: -> @_d 

@@ -38,8 +38,8 @@ exports.AndroidScrollComponent = (function(superClass) {
     if (options.edgeEffect == null) {
       options.edgeEffect = true;
     }
-    if (options.fill == null) {
-      options.fill = {
+    if (options.effectColor == null) {
+      options.effectColor = {
         r: 0,
         g: 0,
         b: 0,
@@ -126,7 +126,7 @@ exports.AndroidScrollComponent = (function(superClass) {
       d[3] = d[7] = b.deltaSideY = Utils.modulate(b.deltaY, [0, b.height], [0, b.height * .20], true);
       d[2] = b.deltaLeftSideX = Utils.modulate(eventX, [0, b.width], [-(b.width / 4), 0], true);
       d[6] = b.deltaRightSideX = Utils.modulate(eventX, [0, b.width], [b.width, b.width + (b.width / 4)], true);
-      b.deltaAlpha = Utils.modulate(b.deltaY, [0, b.height], [0, this.fill.a], true);
+      b.deltaAlpha = Utils.modulate(b.deltaY, [0, b.height], [0, this.effectColor.a], true);
       return this._updateSVG(b, d, b.deltaAlpha);
     } else if (this.scrollY === Math.floor(this.content.height - this.height)) {
       b = this.bounds[1];
@@ -136,7 +136,7 @@ exports.AndroidScrollComponent = (function(superClass) {
       d[3] = d[7] = b.deltaSideY = Utils.modulate(b.deltaY, [b.height, 0], [b.height, b.height - (b.height * .20)], true);
       d[2] = b.deltaLeftSideX = Utils.modulate(eventX, [0, b.width], [-(b.width / 4), 0], true);
       d[6] = b.deltaRightSideX = Utils.modulate(eventX, [0, b.width], [b.width, b.width + (b.width / 4)], true);
-      b.deltaAlpha = Utils.modulate(b.deltaY, [b.height, 0], [0, this.fill.a], true);
+      b.deltaAlpha = Utils.modulate(b.deltaY, [b.height, 0], [0, this.effectColor.a], true);
       return this._updateSVG(b, d, b.deltaAlpha);
     } else {
       top.isOverscrolled = false;
@@ -224,7 +224,7 @@ exports.AndroidScrollComponent = (function(superClass) {
     bound.svg.setAttribute("width", bound.width);
     bound.svg.setAttribute("height", bound.height);
     bound.path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    bound.path.setAttribute("fill", "rgba(" + this.fill.r + ", " + this.fill.g + ", " + this.fill.b + ", " + this.fill.a + ")");
+    bound.path.setAttribute("fill", "rgba(" + this.effectColor.r + ", " + this.effectColor.g + ", " + this.effectColor.b + ", " + this.effectColor.a + ")");
     bound.path.setAttribute("d", "M" + bound.d[0] + "," + bound.d[1] + " L" + bound.d[2] + ", " + bound.d[3] + " Q" + bound.d[4] + "," + bound.d[5] + " " + bound.d[6] + "," + bound.d[7] + " L" + bound.d[8] + ", " + bound.d[9]);
     bound.svg.appendChild(bound.path);
     return bound._element.appendChild(bound.svg);
@@ -232,15 +232,15 @@ exports.AndroidScrollComponent = (function(superClass) {
 
   AndroidScrollComponent.prototype._updateSVG = function(bound, d, alpha) {
     bound.path.setAttribute("d", "M" + d[0] + "," + d[1] + " L" + d[2] + ", " + d[3] + " Q" + d[4] + "," + d[5] + " " + d[6] + "," + d[7] + " L" + d[8] + ", " + d[9]);
-    return bound.path.setAttribute("fill", "rgba(" + this.fill.r + ", " + this.fill.g + ", " + this.fill.b + ", " + alpha + ")");
+    return bound.path.setAttribute("fill", "rgba(" + this.effectColor.r + ", " + this.effectColor.g + ", " + this.effectColor.b + ", " + alpha + ")");
   };
 
-  AndroidScrollComponent.define("fill", {
+  AndroidScrollComponent.define("effectColor", {
     get: function() {
-      return this._fill;
+      return this._effectColor;
     },
     set: function(value) {
-      return this._fill = value;
+      return this._effectColor = value;
     }
   });
 

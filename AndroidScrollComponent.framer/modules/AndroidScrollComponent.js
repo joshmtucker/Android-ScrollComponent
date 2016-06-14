@@ -29,7 +29,7 @@ exports.AndroidScrollComponent = (function(superClass) {
     this._updateSVG = bind(this._updateSVG, this);
     this._createSVG = bind(this._createSVG, this);
     this._createBound = bind(this._createBound, this);
-    this._updateBounds = bind(this._updateBounds, this);
+    this._setBounds = bind(this._setBounds, this);
     this._updateOverscrollEndValue = bind(this._updateOverscrollEndValue, this);
     this._overscrollY = bind(this._overscrollY, this);
     this._touchEnd = bind(this._touchEnd, this);
@@ -37,6 +37,9 @@ exports.AndroidScrollComponent = (function(superClass) {
     this._touchStart = bind(this._touchStart, this);
     if (options.overscrollGlow == null) {
       options.overscrollGlow = true;
+    }
+    if (options.edgeEffect == null) {
+      options.edgeEffect = true;
     }
     if (options.fill == null) {
       options.fill = {
@@ -50,7 +53,7 @@ exports.AndroidScrollComponent = (function(superClass) {
     this.content.draggable.overdrag = false;
     this.content.draggable.bounce = false;
     this.bounds = [];
-    this._updateBounds();
+    this._setBounds();
     this.overscrollEndValue = 0;
     this.overscrollEnd = new Animation({
       layer: this,
@@ -172,7 +175,7 @@ exports.AndroidScrollComponent = (function(superClass) {
     return results;
   };
 
-  AndroidScrollComponent.prototype._updateBounds = function() {
+  AndroidScrollComponent.prototype._setBounds = function() {
     var bound, i, name, options, ref, results;
     ref = $.bounds;
     results = [];
@@ -188,13 +191,6 @@ exports.AndroidScrollComponent = (function(superClass) {
             bound.y = this.height - bound.height;
             bound.width = this.width;
             return bound.d = [0, bound.height, 0, bound.height, bound.width / 2, bound.height, bound.width, bound.height, bound.width, bound.height];
-          case i !== 2:
-            bound.height = this.height;
-            return bound.d = [0, 0, 0, 0, bound.width, bound.height / 2, 0, bound.height, 0, bound.height];
-          case i !== 3:
-            bound.x = this.width - bound.width;
-            bound.height = this.height;
-            return bound.d = [bound.width, 0, bound.width, 0, 0, bound.height / 2, bound.width, bound.height, bound.width, bound.height];
         }
       }).call(this);
       results.push(this._createBound(name, bound));

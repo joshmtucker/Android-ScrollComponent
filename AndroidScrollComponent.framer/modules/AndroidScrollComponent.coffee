@@ -8,6 +8,7 @@ $ =
 class exports.AndroidScrollComponent extends ScrollComponent
 	constructor: (options={}) ->
 		options.overscrollGlow ?= true
+		options.edgeEffect ?= true
 		options.fill ?= r: 0, g: 0, b: 0, a: .24
 		super options
 		
@@ -17,7 +18,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		
 		# Create bounds
 		@bounds = []
-		@_updateBounds()
+		@_setBounds()
 		
 		# Overscroll animation 
 		@overscrollEndValue = 0
@@ -139,7 +140,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			# Update SVG
 			@_updateSVG(b, d, b.deltaAlpha)
 		
-	_updateBounds: =>
+	_setBounds: =>
 		for name, bound of $.bounds
 			i = _.keys($.bounds).indexOf "#{name}"
 			
@@ -151,13 +152,6 @@ class exports.AndroidScrollComponent extends ScrollComponent
 					bound.y = @height - bound.height
 					bound.width = @width
 					bound.d = [0, bound.height, 0, bound.height, bound.width/2, bound.height, bound.width, bound.height, bound.width, bound.height]
-				when i is 2
-					bound.height = @height
-					bound.d = [0, 0, 0, 0, bound.width, bound.height/2, 0, bound.height, 0, bound.height]
-				when i is 3
-					bound.x = @width - bound.width
-					bound.height = @height
-					bound.d = [bound.width, 0, bound.width, 0, 0, bound.height/2, bound.width, bound.height, bound.width, bound.height]
 					
 			# Create bound		
 			@_createBound(name, bound)

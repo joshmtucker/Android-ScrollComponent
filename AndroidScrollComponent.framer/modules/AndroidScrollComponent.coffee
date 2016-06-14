@@ -8,7 +8,7 @@ $ =
 class exports.AndroidScrollComponent extends ScrollComponent
 	constructor: (options={}) ->
 		options.edgeEffect ?= true
-		options.effectColor ?= r: 0, g: 0, b: 0, a: .24
+		options.fill ?= r: 0, g: 0, b: 0, a: .24
 		super options
 		
 		# Disable overdrag and bounce
@@ -200,9 +200,9 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		bound.path.setAttribute "fill", "rgba(#{@fill.r}, #{@fill.g}, #{@fill.b}, #{alpha})"
 					
 	# DEFINTIONS
-	@define "effectColor",
-		get: -> @_effectColor
-		set: (value) -> @_effectColor = value 
+	@define "fill",
+		get: -> @_fill
+		set: (value) -> @_fill = value 
 		
 	@define "d", 
 		get: -> @_d 

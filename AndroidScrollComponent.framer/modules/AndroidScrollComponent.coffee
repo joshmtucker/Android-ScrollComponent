@@ -7,7 +7,7 @@ $ =
 
 class exports.AndroidScrollComponent extends ScrollComponent
 	constructor: (options={}) ->
-		options.overscrollGlow ?= true
+		options.edgeEffect ?= true
 		options.fill ?= r: 0, g: 0, b: 0, a: .24
 		super options
 		
@@ -57,7 +57,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 	_touchMove: (e) =>
 		# Overscroll
 		if @touched
-			@_overscrollY(e) if @scrollVertical and @overscrollGlow is true
+			@_overscrollY(e) if @scrollVertical and @edgeEffect is true
 		
 	_touchEnd: (e) =>
 		# Touched is false 
@@ -216,9 +216,9 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		get: -> @_touch 
 		set: (value) -> @_touch = value
 
-	@define "overscrollGlow",
-		get: -> @_overscrollGlow 
-		set: (value) -> @_overscrollGlow = value
+	@define "edgeEffect",
+		get: -> @_edgeEffect 
+		set: (value) -> @_edgeEffect = value
 		
 	@define "overscrollEndValue",	
 	get: -> @_overscrollEndValue

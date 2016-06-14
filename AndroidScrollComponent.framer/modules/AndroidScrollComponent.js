@@ -205,11 +205,11 @@ exports.AndroidScrollComponent = (function(superClass) {
       y: bound.y,
       width: bound.width,
       height: bound.height,
-      d: bound.d,
       name: name,
       backgroundColor: "",
       parent: this
     });
+    b.d = bound.d;
     b.isOverscrolled = false;
     this.bounds.push(b);
     return this._createSVG(b);
@@ -220,10 +220,9 @@ exports.AndroidScrollComponent = (function(superClass) {
     bound.svg.setAttribute("width", bound.width);
     bound.svg.setAttribute("height", bound.height);
     bound.path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    bound.path.setAttribute("fill", "rgba(" + this.fill.r + ", " + this.fill.g + ", " + this.fill.b + ", " + this.fill.a + ")");
-    bound.path.setAttribute("d", "M" + bound.d[0] + "," + bound.d[1] + " L" + bound.d[2] + ", " + bound.d[3] + " Q" + bound.d[4] + "," + bound.d[5] + " " + bound.d[6] + "," + bound.d[7] + " L" + bound.d[8] + ", " + bound.d[9]);
     bound.svg.appendChild(bound.path);
-    return bound._element.appendChild(bound.svg);
+    bound._element.appendChild(bound.svg);
+    return this._updateSVG(bound, bound.d, this.fill.a);
   };
 
   AndroidScrollComponent.prototype._updateSVG = function(bound, d, alpha) {
@@ -237,15 +236,6 @@ exports.AndroidScrollComponent = (function(superClass) {
     },
     set: function(value) {
       return this._fill = value;
-    }
-  });
-
-  AndroidScrollComponent.define("d", {
-    get: function() {
-      return this._d;
-    },
-    set: function(value) {
-      return this._d = value;
     }
   });
 

@@ -162,10 +162,12 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			y: bound.y
 			width: bound.width
 			height: bound.height
-			d: bound.d
 			name: name
 			backgroundColor: "" 
 			parent: @
+
+		# Set d
+		b.d = bound.d
 			
 		# Set isOverscrolled
 		b.isOverscrolled = false
@@ -182,12 +184,13 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		bound.svg.setAttribute "height", bound.height
 		
 		bound.path = document.createElementNS "http://www.w3.org/2000/svg", "path"
-		bound.path.setAttribute "fill", "rgba(#{@fill.r}, #{@fill.g}, #{@fill.b}, #{@fill.a})"
-		bound.path.setAttribute "d", "M#{bound.d[0]},#{bound.d[1]} L#{bound.d[2]}, #{bound.d[3]} Q#{bound.d[4]},#{bound.d[5]} #{bound.d[6]},#{bound.d[7]} L#{bound.d[8]}, #{bound.d[9]}"
-		
+
 		# Append 
 		bound.svg.appendChild bound.path 
 		bound._element.appendChild bound.svg
+
+		# Update SVG
+		@_updateSVG(bound, bound.d, @fill.a)
 		
 	_updateSVG: (bound, d, alpha) =>
 		bound.path.setAttribute "d", "M#{d[0]},#{d[1]} L#{d[2]}, #{d[3]} Q#{d[4]},#{d[5]} #{d[6]},#{d[7]} L#{d[8]}, #{d[9]}"
@@ -197,10 +200,6 @@ class exports.AndroidScrollComponent extends ScrollComponent
 	@define "fill",
 		get: -> @_fill
 		set: (value) -> @_fill = value 
-		
-	@define "d", 
-		get: -> @_d 
-		set: (value) -> @_d = value
 		
 	@define "touched",
 		get: -> @_touched

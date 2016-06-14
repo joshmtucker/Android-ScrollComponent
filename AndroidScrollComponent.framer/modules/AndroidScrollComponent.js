@@ -35,8 +35,8 @@ exports.AndroidScrollComponent = (function(superClass) {
     this._touchEnd = bind(this._touchEnd, this);
     this._touchMove = bind(this._touchMove, this);
     this._touchStart = bind(this._touchStart, this);
-    if (options.edgeEffect == null) {
-      options.edgeEffect = true;
+    if (options.overscrollGlow == null) {
+      options.overscrollGlow = true;
     }
     if (options.fill == null) {
       options.fill = {
@@ -271,12 +271,12 @@ exports.AndroidScrollComponent = (function(superClass) {
     }
   });
 
-  AndroidScrollComponent.define("edgeEffect", {
+  AndroidScrollComponent.define("overscrollGlow", {
     get: function() {
-      return this._edgeEffect;
+      return this._overscrollGlow;
     },
     set: function(value) {
-      return this._edgeEffect = value;
+      return this._overscrollGlow = value;
     }
   });
 

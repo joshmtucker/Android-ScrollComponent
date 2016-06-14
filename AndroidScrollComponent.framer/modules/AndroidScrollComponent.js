@@ -38,8 +38,8 @@ exports.AndroidScrollComponent = (function(superClass) {
     if (options.edgeEffect == null) {
       options.edgeEffect = true;
     }
-    if (options.fill == null) {
-      options.fill = {
+    if (options.effectColor == null) {
+      options.effectColor = {
         r: 0,
         g: 0,
         b: 0,
@@ -235,12 +235,12 @@ exports.AndroidScrollComponent = (function(superClass) {
     return bound.path.setAttribute("fill", "rgba(" + this.fill.r + ", " + this.fill.g + ", " + this.fill.b + ", " + alpha + ")");
   };
 
-  AndroidScrollComponent.define("fill", {
+  AndroidScrollComponent.define("effectColor", {
     get: function() {
-      return this._fill;
+      return this._effectColor;
     },
     set: function(value) {
-      return this._fill = value;
+      return this._effectColor = value;
     }
   });
 

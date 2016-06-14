@@ -20,11 +20,11 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		@_updateBounds()
 		
 		# Overscroll animation 
-		@overscrollEndValue = 0
-		@overscrollEnd = new Animation
+		@effectAnimationValue = 0
+		@effectAnimation = new Animation
 			layer: @
 			properties:
-				overscrollEndValue: 1
+				effectAnimationValue: 1
 			curve: "beizer-curve(0.0, 0.0, 0.2, 1)"
 			time: .300
 		
@@ -40,9 +40,9 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		@clickOrTouch = true
 		
 		# Stop animation / reset value 
-		@overscrollEnd.stop()
+		@effectAnimation.stop()
 		Framer.Loop.off "update", @_updateOverscrollEndValue
-		@overscrollEndValue = 0
+		@effectAnimationValue = 0
 		
 		# Set touch x and y
 		if Utils.isMobile()
@@ -70,8 +70,8 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			b.endAlpha = b.deltaAlpha
 		
 		# Overscroll animation 
-		@overscrollEnd.start()
-		@overscrollEnd.onAnimationEnd ->
+		@effectAnimation.start()
+		@effectAnimation.onAnimationEnd ->
 			Framer.Loop.off "update", @options.layer._updateOverscrollEndValue
 			
 		Framer.Loop.on "update", @_updateOverscrollEndValue
@@ -125,14 +125,14 @@ class exports.AndroidScrollComponent extends ScrollComponent
 				when b.name is "topBound"
 					d = b.d
 					
-					d[5] = b.deltaY = Utils.modulate @overscrollEndValue, [0, 1], [b.endY, 0], true
+					d[5] = b.deltaY = Utils.modulate @effectAnimationValue, [0, 1], [b.endY, 0], true
 					d[3] = d[7] = b.deltaSideY = Utils.modulate b.deltaY, [b.endY, 0], [b.endSideY, 0], true
 					b.deltaAlpha = Utils.modulate b.deltaY, [b.endY, 0], [b.endAlpha, 0], true
 					
 				when b.name is "bottomBound"
 					d = b.d
 					
-					d[5] = b.deltaY = Utils.modulate @overscrollEndValue, [0, 1], [b.endY, b.height], true
+					d[5] = b.deltaY = Utils.modulate @effectAnimationValue, [0, 1], [b.endY, b.height], true
 					d[3] = d[7] = b.deltaSideY = Utils.modulate b.deltaY, [b.endY, b.height], [b.endSideY, b.height], true
 					b.deltaAlpha = Utils.modulate b.deltaY, [b.endY, b.height], [b.endAlpha, 0], true
 					
@@ -220,6 +220,6 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		get: -> @_edgeEffect 
 		set: (value) -> @_edgeEffect = value
 		
-	@define "overscrollEndValue",	
-	get: -> @_overscrollEndValue
-	set: (value) -> @_overscrollEndValue = value
+	@define "effectAnimationValue",	
+	get: -> @_effectAnimationValue
+	set: (value) -> @_effectAnimationValue = value

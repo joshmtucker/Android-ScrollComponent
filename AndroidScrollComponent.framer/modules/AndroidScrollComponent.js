@@ -51,11 +51,11 @@ exports.AndroidScrollComponent = (function(superClass) {
     this.content.draggable.bounce = false;
     this.bounds = [];
     this._updateBounds();
-    this.overscrollEndValue = 0;
-    this.overscrollEnd = new Animation({
+    this.effectAnimationValue = 0;
+    this.effectAnimation = new Animation({
       layer: this,
       properties: {
-        overscrollEndValue: 1
+        effectAnimationValue: 1
       },
       curve: "beizer-curve(0.0, 0.0, 0.2, 1)",
       time: .300
@@ -68,9 +68,9 @@ exports.AndroidScrollComponent = (function(superClass) {
 
   AndroidScrollComponent.prototype._touchStart = function(e) {
     this.clickOrTouch = true;
-    this.overscrollEnd.stop();
+    this.effectAnimation.stop();
     Framer.Loop.off("update", this._updateOverscrollEndValue);
-    this.overscrollEndValue = 0;
+    this.effectAnimationValue = 0;
     if (Utils.isMobile()) {
       return this.touch = {
         x: e.touches[0].pageX,
@@ -105,8 +105,8 @@ exports.AndroidScrollComponent = (function(superClass) {
       b.endSideY = b.deltaSideY;
       b.endAlpha = b.deltaAlpha;
     }
-    this.overscrollEnd.start();
-    this.overscrollEnd.onAnimationEnd(function() {
+    this.effectAnimation.start();
+    this.effectAnimation.onAnimationEnd(function() {
       return Framer.Loop.off("update", this.options.layer._updateOverscrollEndValue);
     });
     return Framer.Loop.on("update", this._updateOverscrollEndValue);
@@ -157,12 +157,12 @@ exports.AndroidScrollComponent = (function(superClass) {
         switch (false) {
           case b.name !== "topBound":
             d = b.d;
-            d[5] = b.deltaY = Utils.modulate(this.overscrollEndValue, [0, 1], [b.endY, 0], true);
+            d[5] = b.deltaY = Utils.modulate(this.effectAnimationValue, [0, 1], [b.endY, 0], true);
             d[3] = d[7] = b.deltaSideY = Utils.modulate(b.deltaY, [b.endY, 0], [b.endSideY, 0], true);
             return b.deltaAlpha = Utils.modulate(b.deltaY, [b.endY, 0], [b.endAlpha, 0], true);
           case b.name !== "bottomBound":
             d = b.d;
-            d[5] = b.deltaY = Utils.modulate(this.overscrollEndValue, [0, 1], [b.endY, b.height], true);
+            d[5] = b.deltaY = Utils.modulate(this.effectAnimationValue, [0, 1], [b.endY, b.height], true);
             d[3] = d[7] = b.deltaSideY = Utils.modulate(b.deltaY, [b.endY, b.height], [b.endSideY, b.height], true);
             return b.deltaAlpha = Utils.modulate(b.deltaY, [b.endY, b.height], [b.endAlpha, 0], true);
         }
@@ -280,12 +280,12 @@ exports.AndroidScrollComponent = (function(superClass) {
     }
   });
 
-  AndroidScrollComponent.define("overscrollEndValue", {
+  AndroidScrollComponent.define("effectAnimationValue", {
     get: function() {
-      return this._overscrollEndValue;
+      return this._effectAnimationValue;
     },
     set: function(value) {
-      return this._overscrollEndValue = value;
+      return this._effectAnimationValue = value;
     }
   });
 

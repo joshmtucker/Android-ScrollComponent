@@ -67,7 +67,7 @@ exports.AndroidScrollComponent = (function(superClass) {
   }
 
   AndroidScrollComponent.prototype._touchStart = function(e) {
-    this.touched = true;
+    this.clickOrTouch = true;
     this.overscrollEnd.stop();
     Framer.Loop.off("update", this._updateOverscrollEndValue);
     this.overscrollEndValue = 0;
@@ -85,7 +85,7 @@ exports.AndroidScrollComponent = (function(superClass) {
   };
 
   AndroidScrollComponent.prototype._touchMove = function(e) {
-    if (this.touched) {
+    if (this.clickOrTouch) {
       if (this.scrollVertical && this.edgeEffect === true) {
         return this._overscrollY(e);
       }
@@ -94,7 +94,7 @@ exports.AndroidScrollComponent = (function(superClass) {
 
   AndroidScrollComponent.prototype._touchEnd = function(e) {
     var b, j, len, ref;
-    this.touched = false;
+    this.clickOrTouch = false;
     ref = this.bounds;
     for (j = 0, len = ref.length; j < len; j++) {
       b = ref[j];
@@ -253,12 +253,12 @@ exports.AndroidScrollComponent = (function(superClass) {
     }
   });
 
-  AndroidScrollComponent.define("touched", {
+  AndroidScrollComponent.define("clickOrTouch", {
     get: function() {
-      return this._touched;
+      return this._clickOrTouch;
     },
     set: function(value) {
-      return this._touched = value;
+      return this._clickOrTouch = value;
     }
   });
 

@@ -37,7 +37,7 @@ class exports.AndroidScrollComponent extends ScrollComponent
 	# EVENTS
 	_touchStart: (e) =>
 		# Touched is true
-		@touched = true
+		@clickOrTouch = true
 		
 		# Stop animation / reset value 
 		@overscrollEnd.stop()
@@ -56,12 +56,12 @@ class exports.AndroidScrollComponent extends ScrollComponent
 			
 	_touchMove: (e) =>
 		# Overscroll
-		if @touched
+		if @clickOrTouch
 			@_overscrollY(e) if @scrollVertical and @edgeEffect is true
 		
 	_touchEnd: (e) =>
 		# Touched is false 
-		@touched = false
+		@clickOrTouch = false
 		
 		# Set end values
 		for b in @bounds when b.isOverscrolled is true
@@ -208,9 +208,9 @@ class exports.AndroidScrollComponent extends ScrollComponent
 		get: -> @_d 
 		set: (value) -> @_d = value
 		
-	@define "touched",
-		get: -> @_touched
-		set: (value) -> @_touched = value
+	@define "clickOrTouch",
+		get: -> @_clickOrTouch
+		set: (value) -> @_clickOrTouch = value
 		
 	@define "touch",
 		get: -> @_touch 
